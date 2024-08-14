@@ -10,6 +10,7 @@ public class PokerHand : IComparable<PokerHand>
 {
     private static Dictionary<char, int> CardRanks = new()
     {
+        {'J', 1 },
         {'2', 2 },
         {'3', 3 },
         {'4', 4 },
@@ -19,10 +20,9 @@ public class PokerHand : IComparable<PokerHand>
         {'8', 8 },
         {'9', 9 },
         {'T', 10 },
-        {'J', 11 },
-        {'Q', 12 },
-        {'K', 13 },
-        {'A', 14 },
+        {'Q', 11 },
+        {'K', 12 },
+        {'A', 13 },
 
     };
     private PokerHandRank? _rank = null;
@@ -76,7 +76,19 @@ public class PokerHand : IComparable<PokerHand>
             counts[l]++;
         }
 
+        // joker rule addition
+        int jokers = 0;
+        if (counts.Count > 1 && counts.TryGetValue('J', out int value))
+        {
+            jokers = value;
+            counts.Remove('J');
+        }
+
         List<int> groups = counts.Select(kvp => kvp.Value).OrderDescending().ToList();
+        if (jokers > 0)
+        {
+            groups[0] += jokers;
+        }
 
         switch (groups.Count)
         {
