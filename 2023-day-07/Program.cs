@@ -4,7 +4,31 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        bool testMode = false;
+
+        IList<string> inputs = testMode ? GetTestInput() : GetPuzzleInput();
+
+        List<PokerHand> hands = inputs.Select(s =>
+            {
+                string[] parts = s.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                PokerHand hand = new PokerHand()
+                {
+                    Cards = parts[0],
+                    Bid = int.Parse(parts[1])
+                };
+                return hand;
+            })
+            .Order()
+            .ToList();
+
+        long result = 0;
+        for (int i = 0; i < hands.Count; i++)
+        {
+            int rank = i + 1;
+            result += rank * hands[i].Bid;
+        }
+
+        Console.WriteLine(result);
     }
 
     static IList<string> GetPuzzleInput()
